@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Поиск пользователей Telegram">
-  <title>🔍 Поиск пользователя</title>
+  <meta name="description" content="Поиск пользователей Telegram по юзернейму">
+  <title>🔍 Поиск в Telegram</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #7360F2;
-      --primary-dark: #5A4AE3;
-      --text: #2D3748;
-      --text-light: #718096;
-      --bg: #F7FAFC;
+      --primary: #8A2BE2;
+      --primary-dark: #7B1FA2;
+      --text: #2E2D33;
+      --text-light: #6B7280;
+      --bg: #F9FAFB;
       --card: #FFFFFF;
-      --success: #48BB78;
-      --error: #F56565;
-      --border: #E2E8F0;
+      --success: #10B981;
+      --error: #EF4444;
+      --border: #E5E7EB;
+      --glass: rgba(255, 255, 255, 0.7);
     }
     
     * {
@@ -27,27 +28,36 @@
     }
     
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: var(--bg);
+      font-family: 'Manrope', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #F3E8FF, #E9D5FF);
       color: var(--text);
       min-height: 100vh;
       padding: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
+      background-attachment: fixed;
     }
     
     .app {
       width: 100%;
       max-width: 420px;
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
     
     .card {
-      background: var(--card);
-      border-radius: 16px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      background: var(--glass);
+      backdrop-filter: blur(12px);
+      border-radius: 20px;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
       padding: 32px;
       transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
     
     .header {
@@ -56,44 +66,53 @@
     }
     
     .logo {
-      width: 60px;
-      height: 60px;
-      background: linear-gradient(135deg, var(--primary), #A855F7);
-      border-radius: 16px;
+      width: 72px;
+      height: 72px;
+      background: linear-gradient(135deg, var(--primary), #BA68C8);
+      border-radius: 20px;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 0 auto 16px;
-      box-shadow: 0 4px 12px rgba(115, 96, 242, 0.2);
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 20px rgba(138, 43, 226, 0.3);
+      transition: transform 0.3s;
+    }
+    
+    .logo:hover {
+      transform: scale(1.05) rotate(5deg);
     }
     
     .logo svg {
-      width: 30px;
-      height: 30px;
+      width: 36px;
+      height: 36px;
       color: white;
     }
     
     h1 {
-      font-size: 22px;
-      font-weight: 600;
+      font-size: 24px;
+      font-weight: 700;
       margin-bottom: 8px;
+      background: linear-gradient(to right, var(--primary), #BA68C8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
     
     .subtitle {
       color: var(--text-light);
-      font-size: 14px;
+      font-size: 15px;
       line-height: 1.5;
+      opacity: 0.9;
     }
     
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     
     label {
       display: block;
-      font-size: 14px;
-      font-weight: 500;
-      margin-bottom: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 10px;
       color: var(--text);
     }
     
@@ -103,23 +122,25 @@
     
     input {
       width: 100%;
-      padding: 14px 16px;
-      font-size: 15px;
+      padding: 16px 20px;
+      font-size: 16px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      background: var(--bg);
-      transition: all 0.2s;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.8);
+      transition: all 0.3s;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
     
     input:focus {
       outline: none;
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(115, 96, 242, 0.1);
+      box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.2);
+      background: white;
     }
     
     .input-icon {
       position: absolute;
-      right: 16px;
+      right: 20px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-light);
@@ -127,25 +148,26 @@
     
     button {
       width: 100%;
-      padding: 16px;
+      padding: 18px;
       background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
-      font-size: 15px;
-      font-weight: 500;
+      font-size: 16px;
+      font-weight: 600;
       border: none;
-      border-radius: 12px;
+      border-radius: 14px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.3s;
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 5px 15px rgba(138, 43, 226, 0.3);
     }
     
     button:hover {
       background: linear-gradient(to right, var(--primary-dark), var(--primary));
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(115, 96, 242, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(138, 43, 226, 0.4);
     }
     
     button:active {
@@ -154,53 +176,82 @@
     
     .result {
       margin-top: 24px;
-      padding: 16px;
-      border-radius: 12px;
-      font-size: 14px;
+      padding: 18px;
+      border-radius: 14px;
+      font-size: 15px;
       display: none;
-      background: rgba(72, 187, 120, 0.1);
-      border: 1px solid rgba(72, 187, 120, 0.2);
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
       color: var(--success);
       text-align: center;
+      animation: fadeIn 0.5s;
     }
     
     .error {
       margin-top: 16px;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
+      padding: 16px;
+      border-radius: 14px;
+      font-size: 15px;
       display: none;
-      background: rgba(245, 101, 101, 0.1);
-      border: 1px solid rgba(245, 101, 101, 0.2);
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.2);
       color: var(--error);
       text-align: center;
+      animation: shake 0.5s;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-5px); }
+      40%, 80% { transform: translateX(5px); }
     }
     
     .loading {
       display: none;
       text-align: center;
-      margin-top: 16px;
+      margin-top: 20px;
     }
     
     .spinner {
-      width: 24px;
-      height: 24px;
-      border: 3px solid rgba(115, 96, 242, 0.2);
+      width: 28px;
+      height: 28px;
+      border: 4px solid rgba(138, 43, 226, 0.1);
       border-top-color: var(--primary);
       border-radius: 50%;
-      animation: spin 1s linear infinite;
-      margin: 0 auto;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
     }
     
     @keyframes spin {
       to { transform: rotate(360deg); }
     }
     
-    .footer {
+    .privacy-link {
       text-align: center;
       margin-top: 24px;
-      font-size: 12px;
+      font-size: 13px;
       color: var(--text-light);
+    }
+    
+    .privacy-link a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .privacy-link a:hover {
+      text-decoration: underline;
+    }
+    
+    /* Анимация пульсации при успехе */
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.03); }
+      100% { transform: scale(1); }
+    }
+    
+    .success-pulse {
+      animation: pulse 1.5s infinite;
     }
   </style>
 </head>
@@ -213,16 +264,16 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
           </svg>
         </div>
-        <h1>Поиск пользователя</h1>
-        <p class="subtitle">Введите @username или номер телефона для проверки</p>
+        <h1>Поиск в Telegram</h1>
+        <p class="subtitle">Введите @username для поиска пользователя</p>
       </div>
       
       <div class="form-group">
-        <label for="input">Имя пользователя или номер</label>
+        <label for="input">Имя пользователя</label>
         <div class="input-wrapper">
-          <input type="text" id="input" placeholder="@username или +79991234567" inputmode="search">
+          <input type="text" id="input" placeholder="@username" inputmode="search" autocomplete="off">
           <div class="input-icon">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="11" cy="11" r="8"></circle>
               <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
             </svg>
@@ -231,11 +282,11 @@
       </div>
       
       <button id="check-btn" type="button">
-        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
           <polyline points="22 4 12 14.01 9 11.01"></polyline>
         </svg>
-        Проверить
+        Найти
       </button>
       
       <div id="loading" class="loading">
@@ -246,8 +297,8 @@
       <div id="result" class="result" role="status" aria-live="polite"></div>
       <div id="error" class="error" role="alert" aria-live="assertive"></div>
       
-      <div class="footer">
-        Данные будут отправлены в чат с ботом
+      <div class="privacy-link">
+        <a href="https://gist.github.com/AlexDmsh/b057e327ad45997d341997b3a4fe3ccd" target="_blank">Политика конфиденциальности</a>
       </div>
     </div>
   </div>
@@ -267,7 +318,7 @@
         tg.expand();
         tg.enableClosingConfirmation();
         
-        // Можно использовать BackButton если нужно
+        // Показываем кнопку "Назад" для закрытия WebApp
         if (tg.BackButton) {
           tg.BackButton.show();
           tg.BackButton.onClick(() => {
@@ -283,16 +334,16 @@
         result.style.display = 'none';
         
         if (!value) {
-          showError('Пожалуйста, введите имя пользователя или номер');
+          showError('Пожалуйста, введите @username');
           return;
         }
         
-        // Проверка формата ввода
-        const isPhone = /^\+?\d{10,15}$/.test(value);
-        const isUsername = /^@?\w{5,32}$/.test(value.replace(/^@/, ''));
+        // Проверка формата юзернейма (без @ в начале или с ним)
+        const cleanUsername = value.replace(/^@/, '');
+        const usernameRegex = /^[a-zA-Z0-9_]{5,32}$/;
         
-        if (!isPhone && !isUsername) {
-          showError('Введите корректный username (@имя) или номер телефона');
+        if (!usernameRegex.test(cleanUsername)) {
+          showError('Введите корректный @username (5-32 символа, буквы, цифры, _)');
           return;
         }
         
@@ -301,21 +352,22 @@
         btn.disabled = true;
         
         try {
-          // Имитация задержки поиска (можно удалить в реальном приложении)
+          // Имитация задержки поиска (1.5 сек)
           await new Promise(resolve => setTimeout(resolve, 1500));
           
           // Отправляем данные в бота через WebApp
           if (tg && tg.sendData) {
             const searchData = {
-              type: 'user_search',
-              query: isPhone ? 'phone' : 'username',
-              value: value
+              type: 'username_search',
+              username: cleanUsername,
+              from_user: tg.initDataUnsafe.user?.username || 'unknown'
             };
             
             tg.sendData(JSON.stringify(searchData));
             
-            // Сообщение об успехе
-            showResult(`Запрос на поиск "${value}" отправлен боту. Результат появится в чате.`);
+            // Сообщение об успехе с анимацией
+            showResult(`Запрос на поиск @${cleanUsername} отправлен!`);
+            document.getElementById('result').classList.add('success-pulse');
             
             // Закрываем WebApp через 2 секунды
             setTimeout(() => {
@@ -325,7 +377,7 @@
             }, 2000);
           } else {
             // Режим демо (если запущено не в Telegram)
-            showResult(`Демо: запрос на поиск "${value}" (в Telegram данные будут отправлены боту)`);
+            showResult(`Демо: запрос на поиск @${cleanUsername} отправлен бы боту`);
           }
         } catch (e) {
           console.error('Ошибка:', e);
@@ -353,6 +405,14 @@
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
           handleSearch();
+        }
+      });
+      
+      // Автоматически добавляем @ при вводе
+      input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        if (value.length === 1 && !value.startsWith('@')) {
+          e.target.value = '@' + value;
         }
       });
     });
