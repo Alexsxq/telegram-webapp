@@ -3,84 +3,253 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Проверка пользователя Telegram">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>🔎 Проверка пользователя</title>
-  <script src="https://telegram.org/js/telegram-web-app.js" defer></script>
+  <meta name="description" content="Поиск пользователей Telegram">
+  <title>🔍 Поиск пользователя</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-      background-color: #f2f2f2;
+    :root {
+      --primary: #7360F2;
+      --primary-dark: #5A4AE3;
+      --text: #2D3748;
+      --text-light: #718096;
+      --bg: #F7FAFC;
+      --card: #FFFFFF;
+      --success: #48BB78;
+      --error: #F56565;
+      --border: #E2E8F0;
+    }
+    
+    * {
+      box-sizing: border-box;
       margin: 0;
       padding: 0;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
-    }
-    .container {
-      max-width: 480px;
-      margin: 40px auto;
-      background: white;
       padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
-    h1 {
-      font-size: 20px;
+    
+    .app {
+      width: 100%;
+      max-width: 420px;
+    }
+    
+    .card {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+      padding: 32px;
+      transition: all 0.3s ease;
+    }
+    
+    .header {
       text-align: center;
+      margin-bottom: 28px;
+    }
+    
+    .logo {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, var(--primary), #A855F7);
+      border-radius: 16px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin: 0 auto 16px;
+      box-shadow: 0 4px 12px rgba(115, 96, 242, 0.2);
+    }
+    
+    .logo svg {
+      width: 30px;
+      height: 30px;
+      color: white;
+    }
+    
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    
+    .subtitle {
+      color: var(--text-light);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
+    .form-group {
       margin-bottom: 20px;
     }
+    
     label {
-      font-size: 14px;
-      color: #444;
       display: block;
-      margin-bottom: 4px;
+      font-size: 14px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: var(--text);
     }
+    
+    .input-wrapper {
+      position: relative;
+    }
+    
     input {
       width: 100%;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 8px;
-      border: 1px solid #ccc;
-      box-sizing: border-box;
-      font-size: 16px;
+      padding: 14px 16px;
+      font-size: 15px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--bg);
+      transition: all 0.2s;
     }
+    
+    input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(115, 96, 242, 0.1);
+    }
+    
+    .input-icon {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-light);
+    }
+    
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #007aff;
+      padding: 16px;
+      background: linear-gradient(to right, var(--primary), var(--primary-dark));
       color: white;
-      font-size: 16px;
+      font-size: 15px;
+      font-weight: 500;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
       cursor: pointer;
-      transition: background-color 0.2s;
+      transition: all 0.2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
     }
+    
     button:hover {
-      background-color: #0062cc;
+      background: linear-gradient(to right, var(--primary-dark), var(--primary));
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(115, 96, 242, 0.3);
     }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
     .result {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      display: none;
+      background: rgba(72, 187, 120, 0.1);
+      border: 1px solid rgba(72, 187, 120, 0.2);
+      color: var(--success);
+      text-align: center;
+    }
+    
+    .error {
       margin-top: 16px;
       padding: 12px;
-      background: #e0f7e9;
       border-radius: 8px;
       font-size: 14px;
       display: none;
+      background: rgba(245, 101, 101, 0.1);
+      border: 1px solid rgba(245, 101, 101, 0.2);
+      color: var(--error);
+      text-align: center;
     }
-    .error {
-      color: #ff3b30;
-      margin-top: 8px;
-      font-size: 14px;
+    
+    .loading {
       display: none;
+      text-align: center;
+      margin-top: 16px;
+    }
+    
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 3px solid rgba(115, 96, 242, 0.2);
+      border-top-color: var(--primary);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-light);
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h1>🔎 Поиск пользователя</h1>
-    <label for="input">Введите @username или номер:</label>
-    <input type="text" id="input" placeholder="@username или номер" inputmode="search">
-    <button id="check-btn" type="button">Проверить</button>
-    <div id="result" class="result" role="status" aria-live="polite"></div>
-    <div id="error" class="error" role="alert" aria-live="assertive"></div>
+  <div class="app">
+    <div class="card">
+      <div class="header">
+        <div class="logo">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+        <h1>Поиск пользователя</h1>
+        <p class="subtitle">Введите @username или номер телефона для проверки</p>
+      </div>
+      
+      <div class="form-group">
+        <label for="input">Имя пользователя или номер</label>
+        <div class="input-wrapper">
+          <input type="text" id="input" placeholder="@username или +79991234567" inputmode="search">
+          <div class="input-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <button id="check-btn" type="button">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+          <polyline points="22 4 12 14.01 9 11.01"></polyline>
+        </svg>
+        Проверить
+      </button>
+      
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Ищем пользователя...</p>
+      </div>
+      
+      <div id="result" class="result" role="status" aria-live="polite"></div>
+      <div id="error" class="error" role="alert" aria-live="assertive"></div>
+      
+      <div class="footer">
+        Данные будут отправлены в чат с ботом
+      </div>
+    </div>
   </div>
 
   <script>
@@ -89,13 +258,16 @@
       const btn = document.getElementById('check-btn');
       const result = document.getElementById('result');
       const error = document.getElementById('error');
-
-      // Проверяем, что WebApp инициализирован
+      const loading = document.getElementById('loading');
+      
+      // Инициализация Telegram WebApp
+      let tg;
       if (window.Telegram && window.Telegram.WebApp) {
-        const tg = window.Telegram.WebApp;
+        tg = window.Telegram.WebApp;
         tg.expand();
+        tg.enableClosingConfirmation();
         
-        // Можно использовать BackButton, если нужно
+        // Можно использовать BackButton если нужно
         if (tg.BackButton) {
           tg.BackButton.show();
           tg.BackButton.onClick(() => {
@@ -103,45 +275,84 @@
           });
         }
       }
-
-      function handleCheck() {
+      
+      // Обработчик поиска
+      async function handleSearch() {
         const value = input.value.trim();
         error.style.display = 'none';
         result.style.display = 'none';
-
+        
         if (!value) {
-          error.textContent = 'Введите имя пользователя или номер.';
-          error.style.display = 'block';
-          input.focus();
+          showError('Пожалуйста, введите имя пользователя или номер');
           return;
         }
-
-        // Безопасная обработка ввода
-        const sanitizedValue = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        const message = `Проверено: ${sanitizedValue} — пользователь не найден в локальной базе.`;
-
-        result.innerHTML = message;
-        result.style.display = 'block';
-
-        // Отправка данных в Telegram бота, если доступно
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.sendData) {
-          try {
-            window.Telegram.WebApp.sendData(JSON.stringify({
-              type: 'user_check',
-              value: sanitizedValue
-            }));
-          } catch (e) {
-            console.error('Ошибка при отправке данных:', e);
+        
+        // Проверка формата ввода
+        const isPhone = /^\+?\d{10,15}$/.test(value);
+        const isUsername = /^@?\w{5,32}$/.test(value.replace(/^@/, ''));
+        
+        if (!isPhone && !isUsername) {
+          showError('Введите корректный username (@имя) или номер телефона');
+          return;
+        }
+        
+        // Показываем индикатор загрузки
+        loading.style.display = 'block';
+        btn.disabled = true;
+        
+        try {
+          // Имитация задержки поиска (можно удалить в реальном приложении)
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Отправляем данные в бота через WebApp
+          if (tg && tg.sendData) {
+            const searchData = {
+              type: 'user_search',
+              query: isPhone ? 'phone' : 'username',
+              value: value
+            };
+            
+            tg.sendData(JSON.stringify(searchData));
+            
+            // Сообщение об успехе
+            showResult(`Запрос на поиск "${value}" отправлен боту. Результат появится в чате.`);
+            
+            // Закрываем WebApp через 2 секунды
+            setTimeout(() => {
+              if (tg && tg.close) {
+                tg.close();
+              }
+            }, 2000);
+          } else {
+            // Режим демо (если запущено не в Telegram)
+            showResult(`Демо: запрос на поиск "${value}" (в Telegram данные будут отправлены боту)`);
           }
+        } catch (e) {
+          console.error('Ошибка:', e);
+          showError('Произошла ошибка при отправке запроса');
+        } finally {
+          loading.style.display = 'none';
+          btn.disabled = false;
         }
       }
-
-      btn.addEventListener('click', handleCheck);
       
-      // Добавляем обработчик нажатия Enter
+      function showError(message) {
+        error.textContent = message;
+        error.style.display = 'block';
+        input.focus();
+      }
+      
+      function showResult(message) {
+        result.textContent = message;
+        result.style.display = 'block';
+      }
+      
+      // Обработчики событий
+      btn.addEventListener('click', handleSearch);
+      
       input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
-          handleCheck();
+          handleSearch();
         }
       });
     });
